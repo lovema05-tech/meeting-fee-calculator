@@ -7,12 +7,12 @@ st.set_page_config(page_title="모임 회비 관리 계산기", layout="wide")
 st.title("모임 회비 관리 계산기")
 
 # 세션 상태 초기화 (Clear 기능용)
-if 'total_amount' not in st.session_state:
-    st.session_state.total_amount = 0
-if 'num_people' not in st.session_state:
-    st.session_state.num_people = 1
-if 'tip_ratio' not in st.session_state:
-    st.session_state.tip_ratio = 0.0
+if 'input_total' not in st.session_state:
+    st.session_state.input_total = 0
+if 'input_people' not in st.session_state:
+    st.session_state.input_people = 1
+if 'input_tip' not in st.session_state:
+    st.session_state.input_tip = 0.0
 
 # 화면 레이아웃 (왼쪽: 입력, 오른쪽: 결과)
 col_left, col_right = st.columns(2)
@@ -20,10 +20,9 @@ col_left, col_right = st.columns(2)
 with col_left:
     st.subheader("사용 금액 입력")
     # 입력 필드 (총금액, 인원수, 팁 비율)
-    # session_state를 직접 사용하여 값을 초기화할 수 있도록 구성
-    total_amount = st.number_input("총금액 (원)", min_value=0, value=st.session_state.total_amount, key="input_total")
-    num_people = st.number_input("인원수 (명)", min_value=1, value=st.session_state.num_people, key="input_people")
-    tip_ratio = st.number_input("팁/서비스 비율 (%)", min_value=0.0, max_value=100.0, value=st.session_state.tip_ratio, step=0.1, key="input_tip")
+    total_amount = st.number_input("총금액 (원)", min_value=0, key="input_total")
+    num_people = st.number_input("인원수 (명)", min_value=1, key="input_people")
+    tip_ratio = st.number_input("팁/서비스 비율 (%)", min_value=0.0, max_value=100.0, step=0.1, key="input_tip")
 
 with col_right:
     st.subheader("계산 결과")
@@ -55,11 +54,11 @@ if btn_col2.button("Submit"):
 
 # Clear 버튼 클릭 시 입력값 및 결과 초기화
 if btn_col1.button("Clear"):
-    st.session_state.total_amount = 0
-    st.session_state.num_people = 1
-    st.session_state.tip_ratio = 0.0
+    st.session_state.input_total = 0
+    st.session_state.input_people = 0
+    st.session_state.input_tip = 0.0
     if 'res_amount_per_person' in st.session_state:
-        del st.session_state.res_amount_per_person
+        st.session_state.res_amount_per_person = 0
     if 'res_total_with_tip' in st.session_state:
-        del st.session_state.res_total_with_tip
+        st.session_state.res_total_with_tip = 0
     st.rerun()
