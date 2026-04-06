@@ -14,6 +14,20 @@ if 'input_people' not in st.session_state:
 if 'input_tip' not in st.session_state:
     st.session_state.input_tip = 0.0
 
+# 초기 결과값 세션 상태 설정
+if 'res_amount_per_person' not in st.session_state:
+    st.session_state.res_amount_per_person = 0
+if 'res_total_with_tip' not in st.session_state:
+    st.session_state.res_total_with_tip = 0
+
+# Clear 버튼을 위한 콜백 함수
+def reset_all():
+    st.session_state.input_total = 0
+    st.session_state.input_people = 1
+    st.session_state.input_tip = 0.0
+    st.session_state.res_amount_per_person = 0
+    st.session_state.res_total_with_tip = 0
+
 # 화면 레이아웃 (왼쪽: 입력, 오른쪽: 결과)
 col_left, col_right = st.columns(2)
 
@@ -26,14 +40,10 @@ with col_left:
 
 with col_right:
     st.subheader("계산 결과")
-    # 초기값 설정
-    res_amount_per_person = 0
-    res_total_with_tip = 0
     
-    # 세션에 저장된 결과가 있으면 표시 (Submit 클릭 후 유지용)
-    if 'res_amount_per_person' in st.session_state:
-        res_amount_per_person = st.session_state.res_amount_per_person
-        res_total_with_tip = st.session_state.res_total_with_tip
+    # 세션에 저장된 결과 표시
+    res_amount_per_person = st.session_state.res_amount_per_person
+    res_total_with_tip = st.session_state.res_total_with_tip
 
     st.metric("1인당 금액 (원)", f"{int(res_amount_per_person):,}원")
     st.metric("팁 포함 총 금액 (원)", f"{int(res_total_with_tip):,}원")
@@ -52,13 +62,5 @@ if btn_col2.button("Submit"):
     st.session_state.res_total_with_tip = total_with_tip
     st.rerun()
 
-# Clear 버튼 클릭 시 입력값 및 결과 초기화
-if btn_col1.button("Clear"):
-    st.session_state.input_total = 0
-    st.session_state.input_people = 0
-    st.session_state.input_tip = 0.0
-    if 'res_amount_per_person' in st.session_state:
-        st.session_state.res_amount_per_person = 0
-    if 'res_total_with_tip' in st.session_state:
-        st.session_state.res_total_with_tip = 0
-    st.rerun()
+# Clear 버튼 클릭 시 콜백 함수 실행
+btn_col1.button("Clear", on_click=reset_all)
